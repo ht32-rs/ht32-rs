@@ -3,14 +3,23 @@
 build.py
 Copyright 2020 Henrik Böving
 """
-
+from loguru import logger
+import pathlib
 import os
 
-print("Cleaning")
-os.system("rm -rf svd/*.patched ht32f*")
-print("Creating crates")
+CWD = pathlib.Path()
+SVD = CWD / "svd"
+
+logger.info("Cleaning")
+for patch in SVD.glob("*.patched"):
+    logger.debug("deleting {}", patch.absolute())
+    patch.unlink()
+# idk how to do this in pathlib
+os.system("rm -rf ht32f*")
+logger.info("Creating crates")
+
 os.system("./scripts/makecrates.py -y devices")
-print("Patching SVD files")
+logger.info("Patching SVD files")
 os.system("./scripts/patch.py devices")
-print("Generating code")
+logger.info("Generating code")
 os.system("./scripts/makemodules.py")
