@@ -34,7 +34,13 @@ def main():
             mod = open("mod.rs", "r")
             lines = mod.readlines()
             mod.close()
-            del lines[8]
+
+            # these are lines that annoy rustc
+            lines[22] = ""
+            lines[15] = ""
+            lines[13] = ""
+            lines[11] = ""
+            lines[4] = ""
             mod = open("mod.rs", "w")
             for line in lines:
                 mod.write(line)
