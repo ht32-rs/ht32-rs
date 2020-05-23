@@ -65,7 +65,7 @@ jobs:
           mkdir nightly
           cd ht32-rs
           COMMIT=$(git rev-parse HEAD)
-          cd svd; ./extract.sh; cd..
+          cd svd; ./extract.sh; cd ..
           ./build.py
           mv ht32f* ../nightly
           cp .github/workflows/README-nightlies.md ../nightly/README.md
