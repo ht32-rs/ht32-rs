@@ -20,6 +20,8 @@ jobs:
       - name: Put pip binary directory into path
         run: |
           echo "::add-path::~/.local/bin"
+      -name: Test
+        run: |
           svd --help
       - name: Install Rust
         uses: actions-rs/toolchain@v1
