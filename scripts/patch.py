@@ -8,15 +8,15 @@ Patch all the SVDs mentioned in a certain directory
 Usage: python3 scripts/patch.py devices/
 """
 
-import subprocess
 from os import listdir
 from os.path import isfile, join
 import argparse
 import os
+import svdtools
 
 def main(device_path):
     device_files = [f for f in listdir(device_path) if isfile(join(device_path, f))]
-    [subprocess.Popen(["svd", "patch", f"{device_path}/{f}"]) for f in device_files]
+    [svdtools.patch.main(f"{device_path}/{f}") for f in device_files]
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

@@ -20,9 +20,6 @@ jobs:
       - name: Put pip binary directory into path
         run: |
           echo "::add-path::~/.local/bin"
-      - name: Test
-        run: |
-          svd --help
       - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
@@ -58,7 +55,6 @@ jobs:
           echo "::add-path::~/cargo-bin"
       - name: Deploy SSH key
         run: |
-          svd --help
           mkdir ~/.ssh
           echo "${{ secrets.NIGHTLIES_KEY }}" > ~/.ssh/id_rsa
           chmod 700 ~/.ssh
