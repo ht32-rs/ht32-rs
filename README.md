@@ -1,3 +1,4 @@
+![build nightlies](https://github.com/ht32-rs/ht32-rs/workflows/build%20nightlies/badge.svg)
 # HT32 Peripheral Access Crate
 This repository provides Rust device support for all HT32 microcontrollers providing a safe API to that device's
 peripherals using svd2rust and a community-built collection of patches to the basic SVD files. There is one crate per
