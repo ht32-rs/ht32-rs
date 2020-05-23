@@ -36,14 +36,18 @@ def main():
             mod.close()
 
             # these are lines that annoy rustc
-            lines[22] = ""
-            lines[15] = ""
-            lines[13] = ""
-            lines[11] = ""
-            lines[4] = ""
+            banned = [
+                "#![deny(legacy_directory_ownership)]",
+                "#![deny(plugin_as_library)]",
+                "#![deny(safe_extern_statics)]",
+                "#![deny(unions_with_drop_fields)]",
+                "#![no_std]"
+            ]
+
             mod = open("mod.rs", "w")
             for line in lines:
-                mod.write(line)
+                if line.strip() not in banned:
+                    mod.write(line)
             mod.close()
             os.chdir("../../../")
 
