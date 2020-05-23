@@ -17,10 +17,10 @@ jobs:
         run: |
           pip3 install --user setuptools wheel
           pip3 install --user svdtools
-          ls ~/.local/bin
       - name: Put pip binary directory into path
         run: |
           echo "::add-path::~/.local/bin"
+          svd --help
       - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
@@ -56,6 +56,7 @@ jobs:
           echo "::add-path::~/cargo-bin"
       - name: Deploy SSH key
         run: |
+          svd --help
           mkdir ~/.ssh
           echo "${{ secrets.NIGHTLIES_KEY }}" > ~/.ssh/id_rsa
           chmod 700 ~/.ssh
