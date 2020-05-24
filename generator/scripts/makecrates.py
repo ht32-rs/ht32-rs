@@ -12,12 +12,10 @@ based on available YAML files for each HT32 family.
 Usage: python3 scripts/makecrates.py devices/
 """
 import argparse
-import glob
-import os
-import os.path
 from importlib import resources
 from pathlib import Path
 from typing import Dict, List
+
 import yaml
 from loguru import logger
 
@@ -100,9 +98,9 @@ def make_device_clauses(devices):
     return (
         " else ".join(
             """\
-        if env::var_os("CARGO_FEATURE_{}").is_some() {{
-            "src/{}/device.x"
-        }}""".strip().format(
+            if env::var_os("CARGO_FEATURE_{}").is_some() {{
+                "src/{}/device.x"
+            }}""".strip().format(
                 d.upper(), d
             )
             for d in sorted(devices)
