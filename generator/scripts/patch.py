@@ -16,6 +16,7 @@ import svdtools
 from pathlib import Path
 from loguru import logger
 
+
 def patch_files(device_path: Path):
     device_files = [f for f in device_path.iterdir() if f.is_file()]
     for path in device_files:

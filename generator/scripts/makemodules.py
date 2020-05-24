@@ -30,8 +30,9 @@ def make_modules():
             module_dir = ROOT / crate / "src" / module
             module_dir.mkdir(parents=True, exist_ok=True)
             logger.debug("entering {}", module_dir.absolute())
-            svd_result = subprocess.check_call(["svd2rust", "-g", "-i", f"{output_patch.absolute()}"],
-                                               cwd=module_dir)
+            svd_result = subprocess.check_call(
+                ["svd2rust", "-g", "-i", f"{output_patch.absolute()}"], cwd=module_dir
+            )
             logger.debug("check_call svd2rust := {}", svd_result)
             (module_dir / "build.rs").unlink()
             (module_dir / "generic.rs").replace(module_dir / ".." / "generic.rs")
@@ -41,8 +42,7 @@ def make_modules():
             (module_dir / "lib.rs").replace(module_dir / "mod.rs")
             rustfmt_args = ["rustfmt", f"--config-path={RUST_FMT.absolute()}"]
             rustfmt_args.extend(module_dir.glob("*.rs"))
-            rustfmt_result = subprocess.check_call(
-                rustfmt_args, cwd=module_dir)
+            rustfmt_result = subprocess.check_call(rustfmt_args, cwd=module_dir)
             logger.debug("check_call rustfmt := {}", rustfmt_result)
             lines = (module_dir / "mod.rs").read_text().splitlines(keepends=True)
 
@@ -57,7 +57,7 @@ def make_modules():
             to_remove = [i for i, line in enumerate(lines) if line.strip() in banned]
             for i in reversed(to_remove):
                 del lines[i]
-            with (module_dir / "mod.rs").open('w') as ofile:
+            with (module_dir / "mod.rs").open("w") as ofile:
                 ofile.writelines(lines)
             logger.debug("entering {}", ROOT.absolute())
             os.chdir(f"{ROOT.absolute()}")
