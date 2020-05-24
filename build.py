@@ -21,7 +21,7 @@ SVD = CWD / "svd"
 DEVICES = CWD / "devices"
 
 logger.info("Cleaning")
-for patched in SVD.glob("*.patched"):a
+for patched in SVD.glob("*.patched"):
     logger.debug("deleting {}", patched.absolute())
     patched.unlink()
 # idk how to do this in pathlib without making a giant mess.
