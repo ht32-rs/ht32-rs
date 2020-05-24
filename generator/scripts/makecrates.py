@@ -175,4 +175,4 @@ if __name__ == "__main__":
     parser.add_argument("-y", help="Assume 'yes' to prompt", action="store_true")
     parser.add_argument("devices", help="Path to device YAML files")
     args = parser.parse_args()
-    make_crates(args.devices, args.y)
+    make_crates(Path(args.devices), args.y)
