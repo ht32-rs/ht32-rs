@@ -8,12 +8,10 @@ Patch all the SVDs mentioned in a certain directory
 Usage: python3 scripts/patch.py devices/
 """
 
-from os import listdir
-from os.path import isfile, join
 import argparse
-import os
-import svdtools
 from pathlib import Path
+
+import svdtools
 from loguru import logger
 
 

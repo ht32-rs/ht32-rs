@@ -3,13 +3,14 @@
 build.py
 Copyright 2020 Henrik Böving
 """
+import pathlib
+import subprocess
 import sys
 
 from loguru import logger
-import pathlib
-import os
+
 from generator.scripts import makemodules, patch, makecrates
-import subprocess
+
 # logger setup
 logger.remove()
 logger.add(sys.stdout, colorize=True,
