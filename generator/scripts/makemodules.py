@@ -49,7 +49,7 @@ def main():
                 if line.strip() not in banned:
                     mod.write(line)
             mod.close()
-            os.chdir("../../../")
+            os.chdir("../../../../")
 
 if __name__ == "__main__":
     main()

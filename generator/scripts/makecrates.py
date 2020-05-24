@@ -19,8 +19,9 @@ from importlib import resources
 from pathlib import Path
 from typing import Dict, List
 import yaml
+from loguru import logger
 
-import resource
+from generator import resource
 
 VERSION = "0.1.0"
 SVD2RUST_VERSION = "0.17.0"
@@ -57,8 +58,8 @@ BUILD_TPL = resources.read_text(resource, "build.rs.template")
 
 
 def read_device_table():
-    # inspection always gets this one wrong...
     # since yaml.safe_load is expecting a file stream...
+    # inspection always gets this one wrong...
     # noinspection PyTypeChecker
     with resources.open_text(resource, "ht32_part_table.yaml") as ifile:
         return yaml.safe_load(ifile)
@@ -92,29 +93,30 @@ def make_device_clauses(devices):
 
 
 def make_crates(devices_path: Path, yes: bool):
-    devices: Dict[str, List[Path]] = {}
+    devices: Dict[str, List[str]] = {}
 
     for path in devices_path.glob("*.yaml"):
         yamlfile = path.stem
         family_string = yamlfile.split("_")[0]
         family = family_string[:6]
+        logger.debug("family_string := {!r}", family_string)
         if len(family_string) == 10:
-            family += 4 * "x"
+            family = f"{family}xxxx"
         elif len(family_string) == 9:
-            family += 3 * "y"
+            family = f"{family}yyy"
         else:
             print(f"The yaml file name '{yamlfile}' does not fit the format we expect")
             exit(1)
         device = path.stem.lower()
         if family not in devices:
             devices[family] = []
-        devices[family].append(CWD/device)
+        logger.debug("new device {!r}", device)
+        devices[family].append(device)
 
     table = read_device_table()
 
-    dirs = [CWD/family for family in devices]
-    print("Going to create/update the following directories:")
-    print(dirs)
+    dirs = [CWD / family for family in devices]
+    logger.info("Going to create/update the following directories: {}", dirs)
     if not yes:
         input("Enter to continue, ctrl-C to cancel")
 
@@ -136,15 +138,18 @@ def make_crates(devices_path: Path, yes: bool):
                                        svd2rust_version=SVD2RUST_VERSION)
         build_rs = BUILD_TPL.format(device_clauses=clauses)
 
-        os.makedirs(os.path.join(crate, "src"), exist_ok=True)
-        with open(os.path.join(crate, "Cargo.toml"), "w") as f:
-            f.write(cargo_toml)
-        with open(os.path.join(crate, "README.md"), "w") as f:
-            f.write(readme)
-        with open(os.path.join(crate, "src", "lib.rs"), "w") as f:
-            f.write(lib_rs)
-        with open(os.path.join(crate, "build.rs"), "w") as f:
-            f.write(build_rs)
+        # path to output crate dir
+        output_path = CWD / crate
+        # path to output crate src dir
+        output_src = output_path / "src"
+
+        output_path.mkdir(exist_ok=True)
+        output_src.mkdir(exist_ok=True)
+
+        (output_path / "Cargo.toml").write_text(cargo_toml)
+        (output_path / "README.md").write_text(readme)
+        (output_src / "lib.rs").write_text(lib_rs)
+        (output_path / "build.rs").write_text(build_rs)
 
 
 if __name__ == "__main__":
