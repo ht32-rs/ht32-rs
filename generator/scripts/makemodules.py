@@ -6,12 +6,11 @@ Licensed under the MIT and Apache 2.0 licenses.
 
 Usage: python3 scripts/makemodules.py devices/
 """
-import os
 import pathlib
 import subprocess
-import sys
-import yaml
+
 from loguru import logger
+
 from .shared import read_device_table
 
 ROOT = pathlib.Path().absolute()
@@ -59,8 +58,6 @@ def make_modules():
                 del lines[i]
             with (module_dir / "mod.rs").open("w") as ofile:
                 ofile.writelines(lines)
-            logger.debug("entering {}", ROOT.absolute())
-            os.chdir(f"{ROOT.absolute()}")
 
 
 if __name__ == "__main__":
