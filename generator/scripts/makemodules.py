@@ -44,7 +44,7 @@ def make_modules():
             rustfmt_result = subprocess.check_call(
                 rustfmt_args, cwd=module_dir)
             logger.debug("check_call rustfmt := {}", rustfmt_result)
-            lines = (module_dir / "mod.rs").read_text().splitlines(keepends=False)
+            lines = (module_dir / "mod.rs").read_text().splitlines(keepends=True)
 
             # these are lines that annoy rustc
             banned = [
@@ -58,8 +58,7 @@ def make_modules():
             for i in reversed(to_remove):
                 del lines[i]
             with (module_dir / "mod.rs").open('w') as ofile:
-                for line in lines:
-                    ofile.write(line)
+                ofile.writelines(lines)
             logger.debug("entering {}", ROOT.absolute())
             os.chdir(f"{ROOT.absolute()}")
 
