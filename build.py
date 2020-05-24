@@ -6,20 +6,22 @@ Copyright 2020 Henrik Böving
 from loguru import logger
 import pathlib
 import os
+from generator.scripts import makemodules, patch, makecrates
 
-CWD = pathlib.Path()
+# grab absolute path to the CWD, just in case something fiddles with the CWD...
+CWD = pathlib.Path().absolute()
 SVD = CWD / "svd"
+DEVICES = CWD / "devices"
 
 logger.info("Cleaning")
-for patch in SVD.glob("*.patched"):
-    logger.debug("deleting {}", patch.absolute())
-    patch.unlink()
-# idk how to do this in pathlib
+for patched in SVD.glob("*.patched"):
+    logger.debug("deleting {}", patched.absolute())
+    patched.unlink()
+# idk how to do this in pathlib without making a giant mess.
 os.system("rm -rf ht32f*")
 logger.info("Creating crates")
-
-os.system("./scripts/makecrates.py -y devices")
+makecrates.make_crates(DEVICES, True)
 logger.info("Patching SVD files")
-os.system("./scripts/patch.py devices")
+patch.patch_files(DEVICES)
 logger.info("Generating code")
-os.system("./scripts/makemodules.py")
+makemodules.make_modules()
