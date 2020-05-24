@@ -14,9 +14,11 @@ import argparse
 import os
 import svdtools
 
+
 def main(device_path):
     device_files = [f for f in listdir(device_path) if isfile(join(device_path, f))]
     [svdtools.patch.main(f"{device_path}/{f}") for f in device_files]
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

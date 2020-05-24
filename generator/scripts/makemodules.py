@@ -7,33 +7,44 @@ Licensed under the MIT and Apache 2.0 licenses.
 Usage: python3 scripts/makemodules.py devices/
 """
 import os
+import pathlib
+import subprocess
+import sys
 import yaml
+from loguru import logger
+from .shared import read_device_table
 
-def main():
-    path = os.path.join(
-        os.path.abspath(os.path.split(__file__)[0]), os.pardir,
-        "ht32_part_table.yaml")
+ROOT = pathlib.Path().absolute()
+SVD_DIR = ROOT / "svd"
+RUST_FMT = ROOT / "rustfmt.toml"
 
-    with open(path, encoding='utf-8') as f:
-        table = yaml.safe_load(f)
+
+def make_modules():
+    table = read_device_table()
 
     for crate in table:
 
         for module in table[crate]:
-            print(f"Generating code for svd/{module}.svd.patched")
-            os.chdir(crate)
-            os.mkdir(f"src/{module}")
-            os.chdir(f"src/{module}")
-            os.system(f"svd2rust -g  -i ../../../svd/{module}.svd.patched")
-            os.remove("build.rs")
-            os.rename("generic.rs", "../generic.rs")
-            os.rename("lib.rs", "mod.rs")
-            os.system("form -i mod.rs -o .")
-            os.rename("lib.rs", "mod.rs")
-            os.system("rustfmt --config-path=../../../rustfmt.toml ./*.rs")
-            mod = open("mod.rs", "r")
-            lines = mod.readlines()
-            mod.close()
+            output_patch = SVD_DIR / f"{module}.svd.patched"
+            logger.info("Generating code for {}", output_patch.absolute())
+            module_dir = ROOT / crate / "src" / module
+            module_dir.mkdir(parents=True, exist_ok=True)
+            logger.debug("entering {}", module_dir.absolute())
+            svd_result = subprocess.check_call(["svd2rust", "-g", "-i", f"{output_patch.absolute()}"],
+                                               cwd=module_dir)
+            logger.debug("check_call svd2rust := {}", svd_result)
+            (module_dir / "build.rs").unlink()
+            (module_dir / "generic.rs").replace(module_dir / ".." / "generic.rs")
+            (module_dir / "lib.rs").replace(module_dir / "mod.rs")
+            form_result = subprocess.check_call(["form", "-i", "mod.rs", "-o", "."], cwd=module_dir)
+            logger.debug("check_call form := {}", form_result)
+            (module_dir / "lib.rs").replace(module_dir / "mod.rs")
+            rustfmt_args = ["rustfmt", f"--config-path={RUST_FMT.absolute()}"]
+            rustfmt_args.extend(module_dir.glob("*.rs"))
+            rustfmt_result = subprocess.check_call(
+                rustfmt_args, cwd=module_dir)
+            logger.debug("check_call rustfmt := {}", rustfmt_result)
+            lines = (module_dir / "mod.rs").read_text().splitlines(keepends=False)
 
             # these are lines that annoy rustc
             banned = [
@@ -41,15 +52,17 @@ def main():
                 "#![deny(plugin_as_library)]",
                 "#![deny(safe_extern_statics)]",
                 "#![deny(unions_with_drop_fields)]",
-                "#![no_std]"
+                "#![no_std]",
             ]
+            to_remove = [i for i, line in enumerate(lines) if line.strip() in banned]
+            for i in reversed(to_remove):
+                del lines[i]
+            with (module_dir / "mod.rs").open('w') as ofile:
+                for line in lines:
+                    ofile.write(line)
+            logger.debug("entering {}", ROOT.absolute())
+            os.chdir(f"{ROOT.absolute()}")
 
-            mod = open("mod.rs", "w")
-            for line in lines:
-                if line.strip() not in banned:
-                    mod.write(line)
-            mod.close()
-            os.chdir("../../../../")
 
 if __name__ == "__main__":
-    main()
+    make_modules()
