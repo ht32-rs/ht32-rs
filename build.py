@@ -13,7 +13,8 @@ from generator.scripts import makemodules, patch, makecrates
 # logger setup
 logger.remove()
 logger.add(sys.stdout, colorize=True,
-           format="<k>[</>{time} <level>{level}</> <green>{module}.{function}:{line}</><k>]</> <level>{message}</>")
+           format="<k>[</>{time} <level>{level}</> <green>{module}.{function}:{line}</><k>]</> "
+                  "<level>{message}</>")
 
 # grab absolute path to the CWD, just in case something fiddles with the CWD...
 CWD = pathlib.Path().absolute()
