@@ -16,10 +16,10 @@ from importlib import resources
 from pathlib import Path
 from typing import Dict, List
 
-import yaml
 from loguru import logger
 
 from generator import resource
+from .shared import read_device_table
 
 VERSION = "0.1.0"
 SVD2RUST_VERSION = "0.17.0"
@@ -67,14 +67,6 @@ README_TPL = resources.read_text(resource, "README.template")
 # inspection always gets this one wrong...
 # noinspection PyTypeChecker
 BUILD_TPL = resources.read_text(resource, "build.rs.template")
-
-
-def read_device_table():
-    # since yaml.safe_load is expecting a file stream...
-    # inspection always gets this one wrong...
-    # noinspection PyTypeChecker
-    with resources.open_text(resource, "ht32_part_table.yaml") as ifile:
-        return yaml.safe_load(ifile)
 
 
 def make_device_rows(table, family):
