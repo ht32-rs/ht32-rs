@@ -32,10 +32,24 @@ CRATE_DOC_FEATURES = {
     "ht32f1yyy": ["rt", "ht32f125x", "ht32f1653_54", "htf32f1655_56", "ht32f175x"],
     "ht32f2xxxx": ["rt", "ht32f22366"],
     "ht32f2yyy": ["rt", "ht32f275x"],
-    "ht32f5xxxx": ["rt", "ht32f50220_30", "ht32f50231_41", "ht32f50343", "ht32f52142",
-                   "ht32f52220_30", "ht32f52231_41", "ht32f52243_53", "ht32f52331_41",
-                   "ht32f52342_52", "þ32f52344_54", "ht32f52357_67", "ht32f57331_41",
-                   "ht32f57342_52", "ht32f59041", " ht32f59741"],
+    "ht32f5xxxx": [
+        "rt",
+        "ht32f50220_30",
+        "ht32f50231_41",
+        "ht32f50343",
+        "ht32f52142",
+        "ht32f52220_30",
+        "ht32f52231_41",
+        "ht32f52243_53",
+        "ht32f52331_41",
+        "ht32f52342_52",
+        "þ32f52344_54",
+        "ht32f52357_67",
+        "ht32f57331_41",
+        "ht32f57342_52",
+        "ht32f59041",
+        " ht32f59741",
+    ],
     "ht32f5yyy": ["rt", "ht32f5826"],
     "ht32f6xxxx": ["rt", "ht32f61352", "ht32f65230_40"],
 }
@@ -68,9 +82,8 @@ def read_device_table():
 def make_device_rows(table, family):
     rows = []
     for device, dt in table[family].items():
-        links = "[{}]({}), [st.com]({})".format(
-            dt['um'], dt['um_url'], dt['url'])
-        members = ", ".join(m for m in dt['members'])
+        links = "[{}]({}), [st.com]({})".format(dt["um"], dt["um_url"], dt["url"])
+        members = ", ".join(m for m in dt["members"])
         rows.append("| {} | {} | {} |".format(device, members, links))
     return "\n".join(sorted(rows))
 
@@ -80,16 +93,22 @@ def make_features(devices):
 
 
 def make_mods(devices):
-    return "\n".join('#[cfg(feature = "{0}")]\npub mod {0};\n'.format(d)
-                     for d in sorted(devices))
+    return "\n".join('#[cfg(feature = "{0}")]\npub mod {0};\n'.format(d) for d in sorted(devices))
 
 
 def make_device_clauses(devices):
-    return " else ".join("""\
+    return (
+        " else ".join(
+            """\
         if env::var_os("CARGO_FEATURE_{}").is_some() {{
             "src/{}/device.x"
-        }}""".strip().format(d.upper(), d) for d in sorted(devices)) + \
-           " else { panic!(\"No device features selected\"); }"
+        }}""".strip().format(
+                d.upper(), d
+            )
+            for d in sorted(devices)
+        )
+        + ' else { panic!("No device features selected"); }'
+    )
 
 
 def make_crates(devices_path: Path, yes: bool):
@@ -128,14 +147,23 @@ def make_crates(devices_path: Path, yes: bool):
         mods = make_mods(devices[family])
         ufamily = family.upper()
         cargo_toml = CARGO_TOML_TPL.format(
-            family=ufamily, crate=crate, version=VERSION, features=features,
-            docs_features=str(CRATE_DOC_FEATURES[crate]))
+            family=ufamily,
+            crate=crate,
+            version=VERSION,
+            features=features,
+            docs_features=str(CRATE_DOC_FEATURES[crate]),
+        )
         readme = README_TPL.format(
-            family=ufamily, crate=crate, device=devices[family][0],
-            version=VERSION, svd2rust_version=SVD2RUST_VERSION,
-            devices=make_device_rows(table, family))
-        lib_rs = SRC_LIB_RS_TPL.format(family=ufamily, mods=mods, crate=crate,
-                                       svd2rust_version=SVD2RUST_VERSION)
+            family=ufamily,
+            crate=crate,
+            device=devices[family][0],
+            version=VERSION,
+            svd2rust_version=SVD2RUST_VERSION,
+            devices=make_device_rows(table, family),
+        )
+        lib_rs = SRC_LIB_RS_TPL.format(
+            family=ufamily, mods=mods, crate=crate, svd2rust_version=SVD2RUST_VERSION
+        )
         build_rs = BUILD_TPL.format(device_clauses=clauses)
 
         # path to output crate dir
@@ -154,8 +182,7 @@ def make_crates(devices_path: Path, yes: bool):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-y", help="Assume 'yes' to prompt",
-                        action="store_true")
+    parser.add_argument("-y", help="Assume 'yes' to prompt", action="store_true")
     parser.add_argument("devices", help="Path to device YAML files")
     args = parser.parse_args()
     make_crates(args.devices, args.y)
