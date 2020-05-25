@@ -16,7 +16,8 @@ jobs:
       - name: Install Python dependencies
         run: |
           pip3 install --user setuptools wheel
-          pip3 install --user svdtools
+          cd ht32-rs
+          pip3 install --user -r requirements.txt
       - name: Put pip binary directory into path
         run: |
           echo "::add-path::~/.local/bin"
