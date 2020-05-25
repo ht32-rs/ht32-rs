@@ -1,0 +1,50 @@
+name: CI for PRs
+on:
+  push:
+    branches:
+      - '!master'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout the branch
+        uses: actions/checkout@v2
+        with:
+          path: ht32-rs
+      - name: Install Python dependencies
+        run: |
+          pip3 install --user setuptools wheel
+          cd ht32-rs
+          pip3 install --user -r requirements.txt
+      - name: Put pip binary directory into path
+        run: |
+          echo "::add-path::~/.local/bin"
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          components: rustfmt
+          override: true
+      - name: Install svd2rust
+        uses: actions-rs/cargo@v1
+        with:
+          command: install
+          args: svd2rust --version 0.17.0
+      - name: Install form
+        uses: actions-rs/cargo@v1
+        with:
+          command: install
+          args: form --version 0.7.0
+      - name: Put cargo binary directory into path
+        run: |
+          echo "::add-path::~/cargo-bin"
+      - name: Build
+        run: |
+          cd ht32-rs
+          cd svd
+          ./extract.sh
+          cd ..
+          ./build.py
