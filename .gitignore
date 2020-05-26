@@ -2,3 +2,4 @@
 svd/*.patched
 svd/*.svd
 svd/*.zip
+__pycache__/
