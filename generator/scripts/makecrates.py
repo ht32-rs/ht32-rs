@@ -33,7 +33,7 @@ SVD2RUST_VERSION = "0.17.0"
 CRATE_DOC_FEATURES = {
     "ht32f0yyy": ["rt", "ht32f0006", "ht32f0008"],
     "ht32f1xxxx": ["rt", "ht32f12345", "ht32f12364", "ht32f12365_66"],
-    "ht32f1yyy": ["rt", "ht32f125x", "ht32f1653_54", "htf32f1655_56", "ht32f175x"],
+    "ht32f1yyy": ["rt", "ht32f125x", "ht32f1653_54", "ht32f1655_56", "ht32f175x"],
     "ht32f2xxxx": ["rt", "ht32f22366"],
     "ht32f2yyy": ["rt", "ht32f275x"],
     "ht32f5xxxx": [
@@ -47,12 +47,12 @@ CRATE_DOC_FEATURES = {
         "ht32f52243_53",
         "ht32f52331_41",
         "ht32f52342_52",
-        "þ32f52344_54",
+        "ht32f52344_54",
         "ht32f52357_67",
         "ht32f57331_41",
         "ht32f57342_52",
         "ht32f59041",
-        " ht32f59741",
+        "ht32f59741",
     ],
     "ht32f5yyy": ["rt", "ht32f5826"],
     "ht32f6xxxx": ["rt", "ht32f61352", "ht32f65230_40"],
