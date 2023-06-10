@@ -32,12 +32,12 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: install
-          args: svd2rust --version 0.17.0
+          args: svd2rust --version 0.29.0
       - name: Install form
         uses: actions-rs/cargo@v1
         with:
           command: install
-          args: form --version 0.7.0
+          args: form --version 0.10.0
       - name: Put cargo binary directory into path
         run: |
           echo "::add-path::~/cargo-bin"
