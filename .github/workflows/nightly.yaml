@@ -38,6 +38,11 @@ jobs:
         with:
           command: install
           args: form --version 0.10.0
+      - name: Install svdtools
+        uses: actions-rs/cargo@v1
+        with:
+          command: install
+          args: svdtools --version 0.3.0
       - name: Put cargo binary directory into path
         run: |
           echo "::add-path::~/cargo-bin"
