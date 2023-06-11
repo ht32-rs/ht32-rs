@@ -29,20 +29,21 @@ def make_modules():
             module_dir = ROOT / crate / "src" / module
             module_dir.mkdir(parents=True, exist_ok=True)
             logger.debug("entering {}", module_dir.absolute())
-            svd_result = subprocess.check_call(
-                ["svd2rust", "-g", "-i", f"{output_patch.absolute()}"], cwd=module_dir
+            svd_result = subprocess.call(
+                ["svd2rust", "-m", "-g", "--strict", "--pascal_enum_values",
+                 "--max_cluster_size", "-i", f"{output_patch.absolute()}"],
+                cwd=module_dir
             )
-            logger.debug("check_call svd2rust := {}", svd_result)
+            logger.debug("subprocess call svd2rust := {}", svd_result)
             (module_dir / "build.rs").unlink()
             (module_dir / "generic.rs").replace(module_dir / ".." / "generic.rs")
-            (module_dir / "lib.rs").replace(module_dir / "mod.rs")
-            form_result = subprocess.check_call(["form", "-i", "mod.rs", "-o", "."], cwd=module_dir)
-            logger.debug("check_call form := {}", form_result)
+            form_result = subprocess.call(["form", "-i", "mod.rs", "-o", "."], cwd=module_dir)
+            logger.debug("subprocess call form := {}", form_result)
             (module_dir / "lib.rs").replace(module_dir / "mod.rs")
             rustfmt_args = ["rustfmt", f"--config-path={RUST_FMT.absolute()}"]
-            rustfmt_args.extend(module_dir.glob("*.rs"))
-            rustfmt_result = subprocess.check_call(rustfmt_args, cwd=module_dir)
-            logger.debug("check_call rustfmt := {}", rustfmt_result)
+            rustfmt_args.extend([str(i) for i in module_dir.glob("*.rs")])
+            rustfmt_result = subprocess.call(rustfmt_args, cwd=module_dir)
+            logger.debug("subprocess call rustfmt := {}", rustfmt_result)
             lines = (module_dir / "mod.rs").read_text().splitlines(keepends=True)
 
             # these are lines that annoy rustc

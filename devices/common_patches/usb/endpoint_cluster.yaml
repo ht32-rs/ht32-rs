@@ -1,0 +1,64 @@
+USB:
+  _modify:
+    USB_CSR:
+      description: USB control bits and USB data line status
+    USB_IER:
+      description: USB interrupt enable control
+    USB_ISR:
+      description: USB interrupt status
+    USB_FCR:
+      description: Lost Start-of-Frame number and the USB frame count
+    USB_DEVAR:
+      description: USB device address
+  _cluster:
+    "EP0":
+      description: USB control endpoint
+      USB_EP[0]CSR:
+        name: CSR
+        description: Endpoint control and status bits
+      USB_EP[0]IER:
+        name: IER
+        description: Endpoint interrupt enable control bits
+      USB_EP[0]ISR:
+        name: ISR
+        description: Endpoint interrupt status
+      USB_EP[0]TCR:
+        name: TCR
+        description: Endpoint data transfer byte count
+      USB_EP[0]CFGR:
+        name: CFGR
+        description: Endpoint configuration
+    "EP%sS":
+      description: USB single-buffered endpoints
+      USB_EP[123]CSR:
+        name: CSR
+        description: Endpoint control and status bits
+      USB_EP[123]IER:
+        name: IER
+        description: Endpoint interrupt enable control bits
+      USB_EP[123]ISR:
+        name: ISR
+        description: Endpoint interrupt status
+      USB_EP[123]TCR:
+        name: TCR
+        description: Endpoint data transfer byte count
+      USB_EP[123]CFGR:
+        name: CFGR
+        description: Endpoint configuration
+    "EP%sD":
+      description: USB double-buffered endpoints
+      USB_EP[4567]CSR:
+        name: CSR
+        description: Endpoint control and status bits
+      USB_EP[4567]IER:
+        name: IER
+        description: Endpoint interrupt enable control bits
+      USB_EP[4567]ISR:
+        name: ISR
+        description: Endpoint interrupt status
+      USB_EP[4567]TCR:
+        name: TCR
+        description: Endpoint data transfer byte count
+      USB_EP[4567]CFGR:
+        name: CFGR
+        description: Endpoint configuration

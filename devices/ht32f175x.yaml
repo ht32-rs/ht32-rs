@@ -1,1 +1,4 @@
 _svd: ../svd/ht32f175x.svd
+
+_include:
+ - common_patches/usb/endpoint_cluster.yaml
