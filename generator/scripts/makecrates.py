@@ -12,6 +12,7 @@ based on available YAML files for each HT32 family.
 Usage: python3 scripts/makecrates.py devices/
 """
 import argparse
+from importlib import resources
 from pathlib import Path
 from sys import version_info
 from typing import Dict, List
@@ -21,11 +22,6 @@ from loguru import logger
 from generator import resource
 from .shared import read_device_table
 
-if version_info.minor <= 6:
-    # py <=3.6 doesn't include importlib_resources as standard library, use a backport.
-    import importlib_resources as resources
-else:
-    from importlib import resources
 
 VERSION = "0.1.0"
 SVD2RUST_VERSION = "0.17.0"

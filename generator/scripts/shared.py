@@ -5,17 +5,12 @@ Copyright 2020 Henrik Böving
 Shared script functions
 
 """
+from importlib import resources
 from sys import version_info
 
 import yaml
 
 from generator import resource
-
-if version_info.minor <= 6:
-    # py <=3.6 doesn't include importlib_resources as standard library, use a backport.
-    import importlib_resources as resources
-else:
-    from importlib import resources
 
 
 def read_device_table():
