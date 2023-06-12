@@ -7,45 +7,30 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
+
+    env:
+      SVDTOOLS: svdtools
+
     steps:
       - name: Checkout master
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: ht32-rs
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+
+      - name: Install tools
+        run: ./ht32-rs/generator/scripts/tool_install.sh
+
       - name: Install Python dependencies
         run: |
           pip3 install --user setuptools wheel
-          cd ht32-rs
-          pip3 install --user -r requirements.txt
-      - name: Put pip binary directory into path
-        run: |
-          echo "::add-path::~/.local/bin"
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          profile: minimal
-          components: rustfmt
-          override: true
-      - name: Install svd2rust
-        uses: actions-rs/cargo@v1
-        with:
-          command: install
-          args: svd2rust --version 0.29.0
-      - name: Install form
-        uses: actions-rs/cargo@v1
-        with:
-          command: install
-          args: form --version 0.10.0
-      - name: Install svdtools
-        uses: actions-rs/cargo@v1
-        with:
-          command: install
-          args: svdtools --version 0.3.0
-      - name: Put cargo binary directory into path
-        run: |
-          echo "::add-path::~/cargo-bin"
+          pip3 install --user -r ./ht32-rs/requirements.txt
+
       - name: Deploy SSH key
         run: |
           mkdir ~/.ssh
@@ -53,6 +38,7 @@ jobs:
           chmod 700 ~/.ssh
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -t rsa github.com
+
       - name: Build and publish
         run: |
           mkdir nightly
