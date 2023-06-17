@@ -1,0 +1,24 @@
+GPIO*:
+  _modify:
+    GPIO*_DIRCR:
+      name: DIRCR
+    GPIO*_INER:
+      name: INER
+    GPIO*_PUR:
+      name: PUR
+    GPIO*_PDR:
+      name: PDR
+    GPIO*_ODR:
+      name: ODR
+    GPIO*_DRVR:
+      name: DRVR
+    GPIO*_LOCKR:
+      name: LOCKR
+    GPIO*_DINR:
+      name: DINR
+    GPIO*_DOUTR:
+      name: DOUTR
+    GPIO*_SRR:
+      name: SRR
+    GPIO*_RR:
+      name: RR
