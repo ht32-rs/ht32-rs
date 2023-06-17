@@ -2,3 +2,4 @@ _svd: ../svd/ht32f1653_54.svd
 
 _include:
  - common_patches/usb/endpoint_cluster.yaml
+ - ../peripherals/gpio/gpio_f1.yaml
