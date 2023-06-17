@@ -1,5 +1,5 @@
 [package]
-edition = "2018"
+edition = "2021"
 name = "{crate}"
 version = "{version}"
 authors = ["Henrik Böving <hargonix@gmail.com>", "ht32-rs Contributors"]
@@ -12,7 +12,7 @@ license = "MIT/Apache-2.0"
 
 [dependencies]
 critical-section = {{ version = "1.0", optional = true }}
-cortex-m = "0.7.6"
+cortex-m = "0.7.7"
 cortex-m-rt = {{ version = ">=0.6.15,<0.8", optional = true }}
 vcell = "0.1.3"
 
