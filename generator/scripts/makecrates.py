@@ -23,8 +23,8 @@ from generator import resource
 from .shared import read_device_table
 
 
-VERSION = "0.1.0"
-SVD2RUST_VERSION = "0.17.0"
+VERSION = "0.2.0"
+SVD2RUST_VERSION = "0.29.0"
 
 CRATE_DOC_FEATURES = {
     "ht32f0yyy": ["rt", "ht32f0006", "ht32f0008"],

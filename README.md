@@ -18,7 +18,7 @@ or omissions may remain. We can't make any guarantee of correctness. Please repo
 In your own project's `Cargo.toml`:
 ```toml
 [dependencies.ht32f5xxxx]
-version = "0.1.0"
+version = "0.2.0"
 features = ["ht32f52342_52", "rt"]
 ```
 
